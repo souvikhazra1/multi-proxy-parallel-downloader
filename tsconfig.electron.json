@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "ES6",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "public/electron",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*",
+                "electron/types/*"
+            ]
+        }
+    },
+    "include": [
+        "electron/**/*"
+    ]
+}

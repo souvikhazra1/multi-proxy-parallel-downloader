@@ -1,0 +1,62 @@
+{
+  "name": "multi-proxy-parallel-downloader",
+  "version": "0.1.0",
+  "private": true,
+  "main": "public/electron/index.js",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.36",
+    "@types/react": "^18.2.13",
+    "@types/react-dom": "^18.2.6",
+    "axios": "^1.4.0",
+    "mdb-react-ui-kit": "^6.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "socks-proxy-agent": "^7.0.0",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dev": "npm run electron-watch",
+    "dev-build": "concurrently -k \"npm:start\" \"npm:electron-build\"",
+    "electron": "wait-on http://127.0.0.1:3000 && electron .",
+    "electron-build": "rimraf public/electron && tsc --project tsconfig.electron.json && npm run electron",
+    "electron-watch": "nodemon --watch electron -e ts --exec \"npm run dev-build\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron": "^25.1.1",
+    "electron-is-dev": "^2.0.0",
+    "nodemon": "^2.0.22",
+    "rimraf": "^5.0.1",
+    "sass": "^1.63.4",
+    "typescript": "^4.9.5",
+    "wait-on": "^7.0.1"
+  }
+}
