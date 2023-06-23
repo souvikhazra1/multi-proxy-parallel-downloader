@@ -4,6 +4,7 @@ A tool written using `Electron` and `React` to download file using multiple inte
 
 ## Usage
 ```
+npm i
 npm run dev
 ```
 
