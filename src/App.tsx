@@ -138,7 +138,8 @@ const App: React.FC = () => {
     return `${val.toFixed(2)} ${unit}`;
   }
 
-  const toDisplayTime = (sec: number) => {
+  const toDisplayTime = (seconds: number) => {
+    let sec = Math.round(seconds);
     const hour = Math.floor(sec / 3600);
     sec %= 3600;
     const min = Math.floor(sec / 60);
