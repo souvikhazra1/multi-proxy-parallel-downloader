@@ -8,4 +8,9 @@ npm i
 npm run dev
 ```
 
-** Build script is not ready yet
+## Build
+Using `electron-builder`
+```
+Unpacked:   npm run build-unpacked
+Packed:     npm run build-packed
+```

@@ -13,22 +13,26 @@ interface IDownloadFormElement extends IDownloadRequest {
 }
 
 declare var window: ICustomWindow;
-const DOWNLOADER_COUNT = 50;
-const PROXY_START = 9050;
+const DOWNLOADER_COUNT = parseInt(localStorage.getItem('downloadCount') ?? '0') || 50;
+const PROXY_START = parseInt(localStorage.getItem('proxyStart') ?? '0') || 9050;
 const NI_TOR = 999;
 
 const generateFormData = (downloadCount: number, proxyStart: number) => Array.from({
   length: downloadCount
-}, (_v, i) => ({
-  percent: 100 / downloadCount,
-  url: '',
-  idx: i,
-  proxy: {
-    host: '127.0.0.1',
-    port: (proxyStart + i).toString()
-  },
-  niIdx: NI_TOR
-}));
+}, (_v, i) => {
+  localStorage.setItem('downloadCount', downloadCount.toString());
+  localStorage.setItem('proxyStart', proxyStart.toString());
+  return {
+    percent: 100 / downloadCount,
+    url: '',
+    idx: i,
+    proxy: {
+      host: '127.0.0.1',
+      port: (proxyStart + i).toString()
+    },
+    niIdx: NI_TOR
+  };
+});
 
 const App: React.FC = () => {
   const [downloadStatus, setDownloadStatus] = useState<IDownloadInfo[]>([]);

@@ -2,7 +2,10 @@
   "name": "multi-proxy-parallel-downloader",
   "version": "0.1.0",
   "private": true,
-  "main": "public/electron/index.js",
+  "main": "public/electron.js",
+  "author": "Souvik Hazra",
+  "description": "Tool to download file using multiple proxies/interfaces",
+  "homepage": "./",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.0",
     "@testing-library/jest-dom": "^5.16.5",
@@ -13,6 +16,7 @@
     "@types/react": "^18.2.13",
     "@types/react-dom": "^18.2.6",
     "axios": "^1.4.0",
+    "electron-is-dev": "^2.0.0",
     "mdb-react-ui-kit": "^6.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -26,10 +30,13 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "npm run electron-watch",
-    "dev-build": "concurrently -k \"npm:start\" \"npm:electron-build\"",
+    "dev-build": "concurrently -k \"npm:start\" \"npm:electron-start\"",
     "electron": "wait-on http://127.0.0.1:3000 && electron .",
-    "electron-build": "rimraf public/electron && tsc --project tsconfig.electron.json && npm run electron",
-    "electron-watch": "nodemon --watch electron -e ts --exec \"npm run dev-build\""
+    "electron-build": "rimraf public/electron && tsc --project tsconfig.electron.json",
+    "electron-start": "npm run electron-build -- --inlineSourceMap && npm run electron",
+    "electron-watch": "nodemon --watch electron -e ts --exec \"npm run dev-build\"",
+    "build-packed": "npm run electron-build && npm run build && npx electron-builder",
+    "build-unpacked": "npm run build-packed -- --dir"
   },
   "eslintConfig": {
     "extends": [
@@ -52,7 +59,6 @@
   "devDependencies": {
     "concurrently": "^8.2.0",
     "electron": "^25.1.1",
-    "electron-is-dev": "^2.0.0",
     "nodemon": "^2.0.22",
     "rimraf": "^5.0.1",
     "sass": "^1.63.4",
