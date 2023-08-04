@@ -1,8 +1,9 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { BrowserWindow } from "electron";
+import { BrowserWindow, app, dialog } from "electron";
 import fs, { ReadStream, createReadStream, createWriteStream } from 'fs';
 import https from 'https';
 import os from 'os';
+import path from "path";
 import { SocksProxyAgent } from "socks-proxy-agent";
 import stream from "stream";
 import { promisify } from "util";
@@ -24,6 +25,7 @@ let downloadLoc = '';
 let mainWindow: BrowserWindow | undefined;
 let failed = false;
 let stopped = false;
+let resume = false;
 
 /**
  * Get all network interfaces
@@ -55,7 +57,31 @@ export const getNetworkInterfaces = () => {
 /**
  * Prepare download chunks and call download
  */
-export const startDownload = async (requests: IDownloadRequest[], location: string) => {
+export const startDownload = async (requests: IDownloadRequest[], fName: string) => {
+    let location: string | undefined;
+    if (mainWindow) {
+        location = dialog.showSaveDialogSync({
+            defaultPath: path.join(app.getPath('downloads'), fName)
+        });
+    }
+
+    if (!location) {
+        return false;
+    }
+
+    if (fs.existsSync(`${location}.part0`)) {
+        const btnIdx = dialog.showMessageBoxSync({
+            title: 'Partially Downloaded',
+            message: 'We found partially downloaded files. Do you want to Resume or Restart?',
+            buttons: ['Resume', 'Restart', 'Cancel']
+        });
+        if (btnIdx === 2) {
+            return false;
+        } else {
+            resume = btnIdx === 0;
+        }
+    }
+
     const url = requests[0].url;
     let contentLength = 0
     try {
@@ -152,13 +178,22 @@ const downloadPart = async (download: IDownloadInfo) => {
     let data: ReadStream | undefined;
     let shiftDownload = false;
     let betterPort = '';
-    const lastDownloaded = download.downloadedBytes;
 
-    if (!download.shifted && fs.existsSync(download.destination)) {
-        fs.rmSync(download.destination);
+    if (download.downloadedBytes === 0 && fs.existsSync(download.destination)) {
+        if (resume) {
+            download.downloadedBytes = fs.statSync(download.destination).size;
+            download.progress = Math.round(download.downloadedBytes / download.totalBytes * 100);
+        } else {
+            fs.rmSync(download.destination);
+        }
     }
+    if (download.downloadedBytes === download.totalBytes) {
+        // nothing left to download
+        return;
+    }
+    let lastDownloaded = download.downloadedBytes;
     const writer = createWriteStream(download.destination, {
-        flags: download.shifted ? 'a' : 'w'
+        flags: lastDownloaded > 0 ? 'a' : 'w'
     });
     const config: AxiosRequestConfig = {
         responseType: 'stream',

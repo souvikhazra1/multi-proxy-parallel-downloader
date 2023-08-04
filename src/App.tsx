@@ -115,7 +115,7 @@ const App: React.FC = () => {
         f.proxy.port = f.niIdx.toString();
       }
     })
-    const status = await window.electronApi.startDownload(formData, `E:\\Downloader\\${fName}`);
+    const status = await window.electronApi.startDownload(formData, fName);
     if (status) {
       setDownloading(true);
     } else {
